@@ -14,14 +14,7 @@ install:
   # Install dev php dependencies
   - composer install --no-interaction --prefer-dist
 script:
-  # Ensure phpcs triggers a failing build
-  - sh -c "vendor/bin/phpcs --config-set ignore_warnings_on_exit 1"
-  # Ensure breaking PSR2 compliance fails in CI
-  - sh -c "vendor/bin/phpcs --standard=PSR2 --ignore=app/Http/routes.php app"
-  # Seed database
-  - sh -c "php artisan migrate --seed"
-  # Run tests
-  - sh -c "vendor/bin/phpunit"
-  # Re-run tests to make sure we didn't break something
+  # Generate Key
   - sh -c "php artisan key:generate"
+  # Run tests 
   - sh -c "vendor/bin/phpunit"
