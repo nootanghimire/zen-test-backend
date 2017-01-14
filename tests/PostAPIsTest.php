@@ -9,6 +9,8 @@ class PostAPIsTest extends TestCase
 	//POST Affects Database, so 
 	use DatabaseMigrations;
 
+	//Logins and stuffs are handled by middlewares, so
+	use WithoutMiddleware;
 
     /**
      * A basic test example.
