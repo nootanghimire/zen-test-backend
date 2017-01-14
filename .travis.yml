@@ -22,6 +22,6 @@ script:
   - sh -c "php artisan migrate --seed"
   # Run tests
   - sh -c "vendor/bin/phpunit"
-  # Clean up pre-packaged stuff so the Laravel instance is clean and re-run tests to make sure we didn't break something
-  - sh -c "php artisan clean:template -f"
+  # Re-run tests to make sure we didn't break something
+  - sh -c "php artisan key:generate"
   - sh -c "vendor/bin/phpunit"
