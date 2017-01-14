@@ -13,11 +13,11 @@ class RoomsController extends Controller
     }
 
     //GET Requests 
-    public function get_details($date){
+    public function get_details($room_type, $date){
 
     }
 
-    public function get_details_bulk($date_array){
+    public function get_details_bulk($room_types, $dates){
 
     }
 
