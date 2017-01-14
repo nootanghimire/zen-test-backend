@@ -39,7 +39,7 @@ class GetAPIsTest extends TestCase
 
     public function testBulkDetails()
     {
-    	$this->get('/rooms/details/all/2017-01-12')
+    	$this->get('/rooms/bulk_details/all/2017-01-12')
     	     ->seeJson([
     	     	[
     	     		'room_type' => 'single',
@@ -55,7 +55,7 @@ class GetAPIsTest extends TestCase
     	     	]
     	     ]);
 
-    	$this->get('/rooms/details/double/2017-01-12')
+    	$this->get('/rooms/bulk_details/double/2017-01-12')
     	     ->seeJson([
     	     	[
     	     		'room_type' => 'double',
@@ -64,7 +64,6 @@ class GetAPIsTest extends TestCase
     	     		'available' => '5'
     	     	]
     	     ]);
-    	$this->assertTrue(true);
     }
 
 
