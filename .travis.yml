@@ -16,5 +16,7 @@ install:
 script:
   # Generate Key
   - sh -c "php artisan key:generate"
+  # Refresh Migrations
+  - sh -c "php artisan migrate:refresh --seed"
   # Run tests 
   - sh -c "vendor/bin/phpunit"

@@ -17,7 +17,7 @@ class CreateRoomPricesTable extends Migration
             $table->increments('id');
             $table->integer('room_type_id')->references('id')->on('rooms');
             $table->string('price');
-            $table->date('effective_date')->unique();
+            $table->date('effective_date');
             $table->timestamps();
         });
     }
