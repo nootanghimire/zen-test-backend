@@ -23,6 +23,6 @@ class PostAPIsTest extends TestCase
 
     public function testInventory()
     {
-    	$this->assertTrue(true);
+    	$this->assertTrue(false);
     }
 }
