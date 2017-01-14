@@ -24,3 +24,7 @@ Route::get('rooms/bulk_details/{dates}', 'RoomsController@get_bulk_details');
 Route::post('rooms/price', 'RoomsController@post_price');
 Route::post('rooms/inventory', 'RoomsController@post_inventory');
 
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index');
