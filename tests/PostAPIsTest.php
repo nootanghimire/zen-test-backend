@@ -6,9 +6,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 
 class PostAPIsTest extends TestCase
 {
-	//POST Affects Database, so 
-	use DatabaseMigrations;
-
 	//Logins and stuffs are handled by middlewares, so
 	use WithoutMiddleware;
 
