@@ -25,4 +25,16 @@ class RoomPrices extends Model
 
         return $results;
     }
+
+    public function get_results_range ($room_type, $date_start, $date_end) {
+        $results = $this->whereBetween('effective_date', [$date_start, $date_end])->get();
+        
+        if (is_numeric (current ($room_type) ) ) {
+            $results = $results->whereIn('room_type_id', $room_type);
+        }
+
+        return $results;
+    }
+
+
 }

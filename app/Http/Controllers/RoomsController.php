@@ -41,6 +41,14 @@ class RoomsController extends Controller
         return response()->json($response); //, $response_prices);
     }
 
+    public function get_details_date_range($room_types, $date_one, $date_two){
+        $room_types_array = explode(',', $room_types);
+        $response_inventories = $this->room_inventories->get_results_range($room_types_array, $date_one, $date_two)->toArray();
+        $response_prices = $this->room_prices->get_results_range($room_types_array, $date_one, $date_two)->toArray();
+        $response = array_merge($response_inventories, $response_prices);
+        return response()->json($response);
+    }
+
     //POST Requests
     
     public function post_price(){

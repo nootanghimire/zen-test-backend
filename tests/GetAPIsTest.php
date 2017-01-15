@@ -75,5 +75,35 @@ class GetAPIsTest extends TestCase
 
     }
 
+    public function testDateRange(){
+        $this->get('/rooms/details/by_date_range/all/2010-10-10/2018-10-10')
+            ->seeJson([
+                    'room_type_id' => 1,
+                    'num_available' => 5,
+                    'effective_date' => '2017-01-12'
+                ]);
+
+        $this->get('/rooms/details/by_date_range/all/2010-10-10/2018-10-10')
+            ->seeJson([
+                    'room_type_id' => 2,
+                    'num_available' => 5,
+                    'effective_date' => '2017-01-12'
+                ]);
+
+        $this->get('/rooms/details/by_date_range/all/2010-10-10/2018-10-10')
+            ->seeJson([
+                    'room_type_id' => 1,
+                    'price' => '5000IDR',
+                    'effective_date' => '2017-01-12'
+                ]);
+
+        $this->get('/rooms/details/by_date_range/all/2010-10-10/2018-10-10')
+            ->seeJson([
+                    'room_type_id' => 2,
+                    'price' => '8000IDR',
+                    'effective_date' => '2017-01-12'
+                ]);
+    }
+
 
 }
