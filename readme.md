@@ -40,3 +40,6 @@ To summerize, the plan is to:
   - Look for required changes in In-Dev
   - Iterate
 
+
+#Build
+  - See .travis.yml for all build scripts
