@@ -16,7 +16,13 @@ App.filter('range', function() {
 App.controller("BulkOperationsController", function($scope, $http) {
 
   //Room Size
-  $scope.roomSizeList = ["Single Room", "Double Rooms"];
+  $http.get('/rooms/all').then(function(response){
+    return response.data;
+  }).then(function(response){
+    return response.map(function(elem){ return {id: elem.id, label: elem.label} || false; });
+  }).then(function(room_labels){
+    $scope.roomSizeList = room_labels;
+  });
 
   //Days
   $scope.days = ["Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays", "Sundays"];
@@ -47,7 +53,7 @@ App.controller("BulkOperationsController", function($scope, $http) {
   // Reset Form
   $scope.cancelEventHandler = function() {
     $scope.bulkOperations = {
-      roomSizeSelected : "Single Room",
+      roomSizeSelected : "1",
       dateFrom : new Date(),
       dateTo : new Date(),
       allDays : false,
@@ -65,13 +71,20 @@ App.controller("BulkOperationsController", function($scope, $http) {
   }
 });
 
-App.controller("CalendarViewController", function($scope) {
+App.controller("CalendarViewController", function($scope, $http) {
+  
+  $http.get('/rooms/all').then(function(response){
+    return response.data;
+  }).then(function(response){
+    return response.map(function(elem){ return {id: elem.id, label: elem.label} || false; });
+  }).then(function(room_labels){
+    $scope.roomSizeList = room_labels;
+    $scope.updateCalendar();
+  });
+
   $scope.days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
   $scope.months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  
-  // Set this from backend
-  $scope.roomSizeList = ["Single Room", "Double Room", "Triple Room"];
-  
+
   $scope.date = new Date();
   $scope.currentMonth = $scope.months[$scope.date.getMonth()];
   $scope.currentMonthNum = $scope.months.indexOf($scope.currentMonth);
@@ -81,7 +94,6 @@ App.controller("CalendarViewController", function($scope) {
   $scope.monthStart = new Date(parseInt($scope.currentYear), $scope.currentMonthNum, 1);
   $scope.monthEnd = new Date(parseInt($scope.currentYear), $scope.currentMonthNum + 1, 1);
   $scope.monthLength = ($scope.monthEnd - $scope.monthStart) / (1000 * 60 * 60 * 24);
-
   $scope.dayNames = [];
 
   $scope.dayStartIndex = $scope.monthStart.getDay();
@@ -99,13 +111,12 @@ App.controller("CalendarViewController", function($scope) {
   $scope.roomAndPrice = {};
 
   //Change function name to something like getRoomAndPrice();
-  $scope.getRandomRoomAndPrice = function(year, month){
+  $scope.getRoomAndPrice = function(year, month){
     //Get values from 'year' and 'month' from db
-    
     for(var i = 0; i < $scope.roomSizeList.length; i++) {
-      $scope.roomAndPrice[$scope.roomSizeList[i]] = [];
-      for(var j = 0; j <$scope.monthLength; j++) {
-        $scope.roomAndPrice[$scope.roomSizeList[i]].push({
+      $scope.roomAndPrice[$scope.roomSizeList[i].id] = [];
+      for(var j = 1; j <= $scope.monthLength; j++) {
+        $scope.roomAndPrice[$scope.roomSizeList[i].id].push({
 
           //Set Id, room available, and price from backend
           id:"id-"+i+"-"+j,
@@ -132,10 +143,9 @@ App.controller("CalendarViewController", function($scope) {
       $scope.dayStartIndex++;
     }
 
-    $scope.getRandomRoomAndPrice($scope.currentYear, $scope.currentMonthNum);
+    $scope.getRoomAndPrice($scope.currentYear, $scope.currentMonthNum);
   }
 
-  $scope.updateCalendar();
 
   $scope.updateCell = function(id, room, price){
     //Get updated room and price of id. Send to backend

@@ -25,7 +25,7 @@
             <div class="col-md-1"><strong>Select Room:</strong></div>
             <div class="col-md-2">
               <select class = "form-control" name="" id="" ng-model="bulkOperations.roomSizeSelected" >
-                <option ng-repeat="roomSize in roomSizeList" value="{{roomSize}}">{{roomSize}}</option>
+                <option ng-repeat="roomSize in roomSizeList" value="{{roomSize.id}}">{{roomSize.label}}</option>
               </select>
             </div>
           </form>
@@ -90,7 +90,7 @@
             <tr><td>Price and Availability</td></tr>
             <tr><td>&nbsp;</td></tr>
             <tbody ng-repeat="roomSizeName in roomSizeList">
-              <tr class="roomSizeName"><td>{{roomSizeName}}</td></tr>
+              <tr class="roomSizeName" data-room-id="{{roomSizeName.id}}"><td>{{roomSizeName.label}}</td></tr>
               <tr class="roomAvailable"><td>Rooms Available</td></tr>
               <tr class="roomPrice"><td>Price</td></tr>
             </tbody>
@@ -111,11 +111,11 @@
             <tbody ng-repeat="roomSizeName in roomSizeList">
               <tr class="roomSizeName"><td colspan="{{monthLength}}">&nbsp;</td></tr>
               <tr class="roomAvailable">
-                <td ng-repeat="roomValues in roomAndPrice[roomSizeName] track by $index">
+                <td ng-repeat="roomValues in roomAndPrice[roomSizeName.id] track by $index">
                   <div  ng-click="roomValues.editRoom=!roomValues.editRoom">{{roomValues.room}}</div> 
                   <div class="edit" ng-show="roomValues.editRoom">
                     <form name="editRoomForm">
-                      <input type="text" name="room" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName][$index].room" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCell(roomValues.id, roomAndPrice[roomSizeName][$index].room, roomAndPrice[roomSizeName][$index].price)"> 
+                      <input type="text" name="room" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].room" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCell(roomValues.id, roomAndPrice[roomSizeName.id][$index].room, roomAndPrice[roomSizeName.id][$index].price)"> 
                       <button class="btn btn-primary" type="submit" ng-click="roomValues.editRoom=!roomValues.editRoom"><i class="fa fa-check" aria-hidden="true"></i></button>
                       <button class="btn btn-default" ng-click="editRoomForm.room.$rollbackViewValue();roomValues.editRoom=!roomValues.editRoom"><i class="fa fa-times" aria-hidden="true"></i></button>
                     </form>
@@ -123,11 +123,11 @@
                 </td>
               </tr>
               <tr class="roomPrice">
-                <td ng-repeat="roomValues in roomAndPrice[roomSizeName] track by $index">
+                <td ng-repeat="roomValues in roomAndPrice[roomSizeName.id] track by $index">
                   <div ng-click="roomValues.editPrice=!roomValues.editPrice">{{roomValues.price}} IDR</div> 
                   <div class="edit" ng-show="roomValues.editPrice">
                     <form name="editPriceForm">
-                      <input type="text" name="price" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName][$index].price" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCell(roomValues.id, roomAndPrice[roomSizeName][$index].room, roomAndPrice[roomSizeName][$index].price)"> 
+                      <input type="text" name="price" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].price" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCell(roomValues.id, roomAndPrice[roomSizeName.id][$index].room, roomAndPrice[roomSizeName.id][$index].price)"> 
                       <button class="btn btn-primary" ng-click="roomValues.editPrice=!roomValues.editPrice;" type="submit"><i class="fa fa-check" aria-hidden="true"></i>
                       </button>
                       <button class="btn btn-default" ng-click="editPriceForm.price.$rollbackViewValue();roomValues.editPrice=!roomValues.editPrice"><i class="fa fa-times" aria-hidden="true"></i></button>
