@@ -18,8 +18,7 @@ Route::get('/', function () {
 
 //It's a simple project, so using static routes
 
-Route::get('rooms/details/{room_type}/{date}', 'RoomsController@get_details');
-Route::get('rooms/bulk_details/{room_types}/{dates}', 'RoomsController@get_bulk_details');
+Route::get('rooms/details/{room_types}/{dates}', 'RoomsController@get_details');
 Route::get('rooms/all', 'RoomsController@get_all_rooms');
 
 Route::post('rooms/price', 'RoomsController@post_price');

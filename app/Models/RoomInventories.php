@@ -12,30 +12,19 @@ class RoomInventories extends Model
 
     protected $fillable = ['room_type_id', 'num_available', 'effective_date'];
 
-    protected $filters = [];
 
-    public function set_filter ($filter_label, $filter_value) {
-    	$this->filters[$filter_label] = $filter_value;
-    }
+    public function get_results ($room_type, $date) {
+        if (is_array ($date) ) {
+            $results = $this->get()->whereIn('effective_date', $date);
+        } else { 
+            $results = $this->get()->where('effective_date', $date);
+        }
 
-    public function get_all_filters () {
-    	return $this->filters;
-    }
+        if (is_numeric (current ($room_type) ) ) {
+            $results = $results->whereIn('room_type_id', $room_type);
+        }
 
-    public function get_filter ($filter_label) {
-
-    }
-
-    public function get_all_results_json () {
-
-    }
-
-    public function get_filtered_results_json () {
-
-    }
-
-    public function save_json_to_database () {
-    	
+        return $results;
     }
 
 }

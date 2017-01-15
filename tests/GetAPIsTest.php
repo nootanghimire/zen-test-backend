@@ -31,48 +31,48 @@ class GetAPIsTest extends TestCase
 
     public function testDetails()
     {
-    	$this->get('/rooms/details/single/2017-01-12')
+    	$this->get('/rooms/details/1/2017-01-12')
     	    ->seeJson([
-    	     	'room_type' => 'single',
-    	     	'date' => '2017-01-12',
-    	     	'price' => '5000IDR',
-    	     	'available' => '5'
+    	     	'room_type_id' => 1,
+                'price' => '5000IDR',
+    	     	'effective_date' => '2017-01-12',
     	     ]);
 
-    	$this->get('/rooms/details/double/2017-01-12')
-    	     ->seeJson([
-    	     	'room_type' => 'double',
-    	     	'date' => '2017-01-12',
-    	     	'price' => '8000IDR',
-    	     	'available' => '5'
-    	     ]);
-    }
+        $this->get('/rooms/details/1/2017-01-12')
+            ->seeJson([
+                'room_type_id' => 1,
+                'num_available' => 5,
+                'effective_date' => '2017-01-12',
+             ]);
 
-    public function testBulkDetails()
-    {
-    	$this->get('/rooms/bulk_details/all/2017-01-12')
+    	$this->get('/rooms/details/2/2017-01-12')
     	     ->seeJson([
-    	     		'room_type' => 'single',
-    	     		'date' => '2017-01-12',
+    	     	'room_type_id' => 2,
+                'price' => '8000IDR',
+    	     	'effective_date' => '2017-01-12'
+    	     ]);
+
+        $this->get('/rooms/details/2/2017-01-12')
+             ->seeJson([
+                'room_type_id' => 2,
+                'num_available' => 5,
+                'effective_date' => '2017-01-12'
+             ]);
+
+    	$this->get('/rooms/details/all/2017-01-12')
+    	     ->seeJson([
+    	     		'room_type_id' => 2,
     	     		'price' => '5000IDR',
-    	     		'available' => '5'
+                    'effective_date' => '2017-01-12',
     	     ]);
 
-        $this->get('/rooms/bulk_details/all/2017-01-12')
-    	   ->seeJson([
-    	     		'room_type' => 'double',
-    	     		'date' => '2017-01-12',
-    	     		'price' => '8000IDR',
-    	     		'available' => '5'	
-    	     ]);
+        $this->get('/rooms/details/all/2017-01-12')
+             ->seeJson([
+                    'room_type_id' => 1,
+                    'num_available' => 5,
+                    'effective_date' => '2017-01-12'
+             ]);
 
-    	$this->get('/rooms/bulk_details/double/2017-01-12')
-    	     ->seeJson([
-    	     		'room_type' => 'double',
-    	     		'date' => '2017-01-12',
-    	     		'price' => '8000IDR',
-    	     		'available' => '5'
-    	     ]);
     }
 
 

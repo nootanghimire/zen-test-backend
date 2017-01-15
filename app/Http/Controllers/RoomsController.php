@@ -32,12 +32,18 @@ class RoomsController extends Controller
         return response()->json($this->rooms->all());
     }
 
-    public function get_details($room_type, $date){
+    /*public function get_details($room_type, $date){
+        $response = $this->room_inventories->get_results($room_type, $date);
+        return response()->json($response);
+    }*/
 
-    }
-
-    public function get_details_bulk($room_types, $dates){
-
+    public function get_details($room_types, $dates){
+        $dates_array = explode(',' , $dates);
+        $room_types_array = explode(',', $room_types);
+        $response_inventories = $this->room_inventories->get_results($room_types_array, $dates_array)->toArray();
+        $response_prices = $this->room_prices->get_results($room_types_array, $dates_array)->toArray();
+        $response = array_merge($response_inventories, $response_prices);
+        return response()->json($response); //, $response_prices);
     }
 
     //POST Requests
