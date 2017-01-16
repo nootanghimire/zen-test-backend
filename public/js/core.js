@@ -15,6 +15,9 @@ App.filter('range', function() {
 
 App.controller("BulkOperationsController", function($scope, $http) {
 
+  //Dummy Room Size, for before angular does xhr
+  $scope.roomSizeList = [{id:-99, label:"--Select Room Size--"}];
+
   //Room Size
   $http.get('/rooms/all').then(function(response){
     return response.data;
@@ -24,13 +27,14 @@ App.controller("BulkOperationsController", function($scope, $http) {
     $scope.roomSizeList = room_labels;
   });
 
+
+
   //Days
   $scope.days = ["Mondays", "Tuesdays", "Wednesdays", "Thursdays", "Fridays", "Saturdays", "Sundays"];
 
 
   // Set this from backend
   $scope.bulkOperations = {
-    roomSizeSelected : "Single Room",
     dateFrom : new Date(),
     dateTo : new Date(),
     allDays : false,
@@ -41,15 +45,53 @@ App.controller("BulkOperationsController", function($scope, $http) {
     changeAvailabilityTo : 0
   }
 
+  $scope.clickAllDays = function(){
+    $scope.cancelEventHandler(); //resest
+    $scope.days.forEach(function(elem){
+      $scope.checkDaySelection(elem);
+    });
+    $scope.bulkOperations.allDays = true;
+  }
+
+  $scope.clickAllWeekDays = function(){
+    $scope.cancelEventHandler(); //resest
+    $scope.days.forEach(function(elem){
+      if(elem == 'Saturdays' || elem == 'Sundays') {
+        $scope.uncheckDaySelection(elem);
+        return;
+      }
+      $scope.checkDaySelection(elem);
+    })
+    $scope.bulkOperations.allWeekdays = true;
+  }
+
+  $scope.clickAllWeekends = function(){
+    $scope.cancelEventHandler(); //resest
+    $scope.days.forEach(function(elem){
+      if(elem == 'Saturdays' || elem == 'Sundays') {
+        $scope.checkDaySelection(elem);
+        return;
+      }
+      $scope.uncheckDaySelection(elem);
+    })
+    $scope.bulkOperations.allWeekends = true;  }
+
   // Toggle day checkboxes
   $scope.toggleDaySelection = function(day) {
     $scope.bulkOperations.selectedDays[day] = !$scope.bulkOperations.selectedDays[day];
   }
 
+  $scope.checkDaySelection = function(day){
+    $scope.bulkOperations.selectedDays[day] = true;
+  }
+
+  $scope.uncheckDaySelection = function(day){
+    $scope.bulkOperations.selectedDays[day] = false;
+  }
+
   // Reset Form
   $scope.cancelEventHandler = function() {
     $scope.bulkOperations = {
-      roomSizeSelected : "1",
       dateFrom : new Date(),
       dateTo : new Date(),
       allDays : false,

@@ -24,7 +24,7 @@
           <form action="" class="form-horizontal form-inline">
             <div class="col-md-1"><strong>Select Room:</strong></div>
             <div class="col-md-2">
-              <select class = "form-control" name="" id="" ng-model="bulkOperations.roomSizeSelected" >
+              <select class = "form-control" name="" id="">
                 <option ng-repeat="roomSize in roomSizeList" value="{{roomSize.id}}">{{roomSize.label}}</option>
               </select>
             </div>
@@ -44,13 +44,13 @@
             <div class="col-md-1">Refine Days:</div>
             <div class="col-md-2">
               <div class="checkbox">
-                <label><input type="checkbox" ng-model="bulkOperations.allDays"> All Days</label>
+                <label><input type="checkbox" ng-model="bulkOperations.allDays" ng-click="clickAllDays();"> All Days</label>
               </div>
               <div class="checkbox">
-                <label><input type="checkbox" ng-model="bulkOperations.allWeekdays"> All Weekdays</label>
+                <label><input type="checkbox" ng-model="bulkOperations.allWeekdays" ng-click="clickAllWeekDays();"> All Weekdays</label>
               </div>
               <div class="checkbox">
-                <label><input type="checkbox" ng-model="bulkOperations.allWeekends"> All Weekends</label>
+                <label><input type="checkbox" ng-model="bulkOperations.allWeekends" ng-click="clickAllWeekends();"> All Weekends</label>
               </div>
             </div>
             <div class="col-md-2">
