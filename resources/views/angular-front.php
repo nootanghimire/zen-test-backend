@@ -124,7 +124,7 @@
               </tr>
               <tr class="roomPrice">
                 <td ng-repeat="roomValues in roomAndPrice[roomSizeName.id] track by $index">
-                  <div ng-click="roomValues.editPrice=!roomValues.editPrice">{{roomValues.price}} IDR</div> 
+                  <div ng-click="roomValues.editPrice=!roomValues.editPrice">{{roomValues.price}}</div> 
                   <div class="edit" ng-show="roomValues.editPrice">
                     <form name="editPriceForm">
                       <input type="text" name="price" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].price" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCell(roomValues.id, roomAndPrice[roomSizeName.id][$index].room, roomAndPrice[roomSizeName.id][$index].price)"> 
