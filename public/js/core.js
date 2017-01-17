@@ -13,10 +13,19 @@ App.filter('range', function() {
   };
 });
 
-App.controller("BulkOperationsController", function($scope, $http) {
+App.run(function ($rootScope) {
+    $rootScope.$on('scope.stored', function (event, data) {
+        console.log("scope.stored", data);
+    });
+});
+
+App.controller("BulkOperationsController", function($scope, $http, Scopes) {
+
+  Scopes.store('BulkOperationsController', $scope);
 
   //Dummy Room Size, for before angular does xhr
   $scope.roomSizeList = [{id:-99, label:"--Select Room Size--"}];
+  $scope.selectDataRoomSizeSelect = -99;
 
   //Room Size
   $http.get('/rooms/all').then(function(response){
@@ -25,6 +34,7 @@ App.controller("BulkOperationsController", function($scope, $http) {
     return response.map(function(elem){ return {id: elem.id, label: elem.label} || false; });
   }).then(function(room_labels){
     $scope.roomSizeList = room_labels;
+    //$scope.selectDataRoomSizeSelect = room_labels[0].id;
   });
 
 
@@ -46,7 +56,7 @@ App.controller("BulkOperationsController", function($scope, $http) {
   }
 
   $scope.clickAllDays = function(){
-    $scope.cancelEventHandler(); //resest
+    $scope.resetCheckBoxes(); //resest
     $scope.days.forEach(function(elem){
       $scope.checkDaySelection(elem);
     });
@@ -54,7 +64,7 @@ App.controller("BulkOperationsController", function($scope, $http) {
   }
 
   $scope.clickAllWeekDays = function(){
-    $scope.cancelEventHandler(); //resest
+    $scope.resetCheckBoxes(); //resest
     $scope.days.forEach(function(elem){
       if(elem == 'Saturdays' || elem == 'Sundays') {
         $scope.uncheckDaySelection(elem);
@@ -66,7 +76,7 @@ App.controller("BulkOperationsController", function($scope, $http) {
   }
 
   $scope.clickAllWeekends = function(){
-    $scope.cancelEventHandler(); //resest
+    $scope.resetCheckBoxes(); //resest
     $scope.days.forEach(function(elem){
       if(elem == 'Saturdays' || elem == 'Sundays') {
         $scope.checkDaySelection(elem);
@@ -92,8 +102,8 @@ App.controller("BulkOperationsController", function($scope, $http) {
   // Reset Form
   $scope.cancelEventHandler = function() {
     $scope.bulkOperations = {
-      dateFrom : new Date(),
-      dateTo : new Date(),
+      dateFrom : '',
+      dateTo : '',
       allDays : false,
       allWeekdays : false,
       allWeekends : false,
@@ -102,20 +112,46 @@ App.controller("BulkOperationsController", function($scope, $http) {
       changeAvailabilityTo : 0
     }
   }
+  //Reset Checkboxes
+  $scope.resetCheckBoxes = function() {
+    $scope.bulkOperations.allDays = false;
+    $scope.bulkOperations.allWeekdays = false;
+    $scope.bulkOperations.allWeekends = false;
+    $scope.bulkOperations.selectedDays = {Mondays:false, Tuesdays:false, Wednesdays: false, Thursdays: false, Fridays: false, Saturdays: false, Sundays: false};
+  }
 
   // Save form
   $scope.submitEventHandler = function() {
-    console.log($scope.bulkOperations);
+    //console.log($scope.bulkOperations);
     //send $http, xhr
     //see response
     //need to call update calendar on next controller
     //because this changes things
-    $http.post('/rooms/bulk', $scope.bulkOperations);
+    //var date_from = $scope.bulkOperations.dateFrom.getFullYear() + "-" + ($scope.bulkOperations.dateFrom.getMonth+1) < 10 ? ("0" + ($scope.bulkOperations.dateFrom.getMonth() +1)) : "" + ($scope.bulkOperations.dateFrom.getMonth() + 1) + "-" + ($scope.bulkOperations.dateFrom.getDate < 10 ? ("0" + $scope.bulkOperations.dateFrom.getMonth() +1)) : "" + ($scope.bulkOperations.dateFrom.getMonth() + 1) + "-" + ($scope.bulkOperations.dateFrom.getDate) : ($scope.bulkOperations.dateFrom.getMonth() +1)) : "" + ($scope.bulkOperations.dateFrom.getMonth() + 1) + "-" + ($scope.bulkOperations.dateFrom.getDate));  
+    //var date_to = $scope.bulkOperations.dateTo.getFullYear() + "-" + ($scope.bulkOperations.dateTo.getMonth+1) < 10 ? ("0" + ($scope.bulkOperations.dateTo.getMonth() +1)) : "" + ($scope.bulkOperations.dateTo.getMonth() + 1) + "-" + ($scope.bulkOperations.dateTo.getDate < 10 ? ("0" + $scope.bulkOperations.dateTo.getMonth() +1)) : "" + ($scope.bulkOperations.dateTo.getMonth() + 1) + "-" + ($scope.bulkOperations.dateTo.getDate) : ($scope.bulkOperations.dateTo.getMonth() +1)) : "" + ($scope.bulkOperations.dateTo.getMonth() + 1) + "-" + ($scope.bulkOperations.dateTo.getDate));
+    //$scope.bulkOperations.dateFrom = $scope.bulkOperations.dateFrom.toString();
+    //$scope.bulkOperations.dateTo = $scope.bulkOperations.dateTo.toString();
+    var get_date_array = function(dt){
+      return [dt.getFullYear(), ((dt.getMonth() + 1) < 10 ? ("0" + (dt.getMonth() + 1) ) : ("" + dt.getMonth() + 1)  ), (dt.getDate() < 10 ? ("0" + dt.getDate() ) : ("" + dt.getDate()) )];
+    };
+    var date_from =  get_date_array($scope.bulkOperations.dateFrom).join('-');
+    var date_to = get_date_array($scope.bulkOperations.dateTo).join('-');
+    var send_data = Object.assign({}, $scope.bulkOperations); //copy ES6 style
+    send_data.dateFrom = date_from;
+    send_data.dateTo = date_to;
+    send_data.room_type_id = $scope.selectDataRoomSizeSelect;
+    console.log(send_data);
+    $http.post('/rooms/bulk', send_data).then(function(response){
+      //whatever, update the calendar
+      Scopes.get('CalendarViewController').updateCalendar();
+    });
   }
 });
 
-App.controller("CalendarViewController", function($scope, $http) {
+App.controller("CalendarViewController", function($scope, $http, Scopes) {
   
+  Scopes.store('CalendarViewController', $scope);
+
   $http.get('/rooms/all').then(function(response){
     return response.data;
   }).then(function(response){
@@ -200,14 +236,15 @@ App.controller("CalendarViewController", function($scope, $http) {
         //test: Date is proper
         return response.sort(function(a,b){ return Date.parse(a.effective_date) - Date.parse(b.effective_date);});
       }).then(function(response){
-        //return sort by room_type_id
+        //return sort by room_type_id 
         return response.sort(function(a,b){ return (a.room_type_id - b.room_type_id); });
       }).then(function(response){
+        //console.log(JSON.stringify(response));
         //filter and combine
         //some tests before and after this filter would be great
         return response.filter(function(elem, idx, arr){
           if(typeof arr[idx+1] !== 'undefined'){
-            if(arr[idx+1].room_type_id === arr[idx].room_type_id){
+            if(arr[idx+1].room_type_id === arr[idx].room_type_id && arr[idx+1].effective_date === arr[idx].effective_date){
               Object.assign(arr[idx+1], arr[idx]);
               return false;
             }
@@ -217,6 +254,7 @@ App.controller("CalendarViewController", function($scope, $http) {
         //end filter
       }).then(function(response){
         //map things here,
+        //console.log(JSON.stringify(response));
         return response.map(function(elem){
           var dt = new Date(elem.effective_date);
           dt = dt.getDate();
@@ -225,7 +263,7 @@ App.controller("CalendarViewController", function($scope, $http) {
             id: 'id-' + elem.room_type_id + '-' + dt,
             editRoom: false,
             editPrice: false,
-            room: elem.num_available,
+            room: elem.num_available || 0,
             price: elem.price
           };
         });
@@ -265,11 +303,11 @@ App.controller("CalendarViewController", function($scope, $http) {
     //no need to change anything on frontend side, changes persist
     //check on error, though, if error try to reload
     $http.post(
-      '/rooms/price',
+      '/rooms/inventory',
       {
-        date: $scope.currentYear + "-" + currentMonthNumericDouble + "-" + currentDay,        
+        effective_date: $scope.currentYear + "-" + currentMonthNumericDouble + "-" + currentDay,        
         room_type_id: room_type_id,
-        inventory: room
+        num_available: room
       }
     );
   }
@@ -287,11 +325,25 @@ App.controller("CalendarViewController", function($scope, $http) {
     $http.post(
       '/rooms/price',
       {
-        date: $scope.currentYear + "-" + currentMonthNumericDouble + "-" + currentDay,
+        effective_date: $scope.currentYear + "-" + currentMonthNumericDouble + "-" + currentDay,
         room_type_id: room_type_id,
         price: price
       }
     );
   }
 
-})
+});
+
+App.factory('Scopes', function($rootScope){
+  var mem = {};
+
+  return {
+    store: function (key, value) {
+      $rootScope.$emit('scope.stored', key);
+      mem[key] = value;
+    },
+    get: function (key) {
+      return mem[key];
+    }
+  };
+});

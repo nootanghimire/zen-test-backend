@@ -24,7 +24,7 @@
           <form action="" class="form-horizontal form-inline">
             <div class="col-md-1"><strong>Select Room:</strong></div>
             <div class="col-md-2">
-              <select class = "form-control" name="" id="">
+              <select class = "form-control" name="" id="" ng-model="selectDataRoomSizeSelect">
                 <option ng-repeat="roomSize in roomSizeList" value="{{roomSize.id}}">{{roomSize.label}}</option>
               </select>
             </div>

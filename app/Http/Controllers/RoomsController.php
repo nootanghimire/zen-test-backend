@@ -62,14 +62,57 @@ class RoomsController extends Controller
     //POST Requests
     
     public function post_price(SavePriceRequest $request){
-        echo json_encode($request->all());
+        //assume $request is validated in SavePriceRequest 
+        $params = $request->all();
+        $condition = array_filter($params, function($key){
+            if($key === 'price') return false;
+            return true;
+        }, ARRAY_FILTER_USE_KEY);
+        $ret = RoomPrices::updateOrCreate($condition, ['price' => $params['price']]);
+        //If no exception is thrown, I think we can be sure that it passed
+        return response()->json(['success' => 'true']);
     }
 
     public function post_inventory(SaveInventoryRequest $request){
-        echo json_encode($request->all());	
-    }
+        $params = $request->all();
+        $condition = array_filter($params, function($key){
+            if($key === 'num_available') return false;
+            return true;
+        }, ARRAY_FILTER_USE_KEY);
+        $ret = RoomInventories::updateOrCreate($condition, ['num_available' => $params['num_available']]);
+        //If no exception is thrown, I think we can be sure that it passed
+        return response()->json(['success' => 'true']);    }
 
     public function post_bulk(BulkUpdateRequest $request){
-        echo json_encode($request->all());
+        //I really think, we should use Repository Pattern at this point
+        //sorry for making this method kind of fat
+        
+        //again, assume $request is validated at BulkUpdateRequest
+        $params = $request->all();
+        $start_date = ($params['dateFrom']);
+        $end_date = ($params['dateTo']);
+        $days = array_filter($params['selectedDays']);
+        $dates = [];
+        $days = array_keys($days);
+        foreach($days as $day){
+            $dates = array_merge($dates, $this->getDateForSpecificDayBetweenDates($start_date, $end_date, rtrim($day, 's')));
+            
+        }
+        //dd($dates);
+        foreach($dates as $date){
+            //I am sure there is a better way to do this, but deadlines
+            RoomInventories::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['num_available' => $params['changeAvailabilityTo']]);
+            RoomPrices::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['price' => $params['changePriceTo']]);
+        }
+        return response()->json(["success" => 'true']);
+
+    }
+
+    private function getDateForSpecificDayBetweenDates ($startDate,$endDate,$day) {
+        $endDate = strtotime($endDate);
+        for($i = strtotime($day, strtotime($startDate)); $i <= $endDate; $i = strtotime('+1 week', $i))
+            $date_array[] = date('Y-m-d', $i);
+
+        return $date_array;
     }
 }

@@ -36,5 +36,9 @@ class RoomPrices extends Model
         return $results;
     }
 
+    public function createIfExists($params){
+        
+    }
+
 
 }
