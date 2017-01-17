@@ -106,6 +106,11 @@ App.controller("BulkOperationsController", function($scope, $http) {
   // Save form
   $scope.submitEventHandler = function() {
     console.log($scope.bulkOperations);
+    //send $http, xhr
+    //see response
+    //need to call update calendar on next controller
+    //because this changes things
+    $http.post('/rooms/bulk', $scope.bulkOperations);
   }
 });
 
@@ -139,14 +144,6 @@ App.controller("CalendarViewController", function($scope, $http) {
 
   $scope.roomAndPrice = {};
 
-
-
-  $scope.xhrCall = function($scope, $http){  
-    
-    }; //end xhrcall function
-
-$scope.xhrCall($scope, $http);
-
   //Dummy Fill
   $scope.getRoomAndPrice = function(year, month){
     //Get values from 'year' and 'month' from db
@@ -160,7 +157,7 @@ $scope.xhrCall($scope, $http);
           id:"id-"+$scope.roomSizeList[i].id+"-"+j,
           editRoom: false, // Necessary
           editPrice: false, // Necessary
-          room: 5, //default inventory size
+          room: 0,
           price: "N/A "
         })
       }
@@ -191,9 +188,9 @@ $scope.xhrCall($scope, $http);
     $scope.send_month_base = $scope.currentYear.toString() + '-' + (($scope.currentMonthNum +1) < 10 ? '0' : '') + ($scope.currentMonthNum + 1).toString();
     $scope.send_month_start = $scope.send_month_base + '-01';
     $scope.send_month_end = $scope.send_month_base.toString() + '-' + $scope.monthLength.toString();
-    console.log('months');
-    console.log($scope.send_month_start);
-    console.log($scope.send_month_end);
+    //console.log('months');
+    //console.log($scope.send_month_start);
+    //console.log($scope.send_month_end);
     $http.get('/rooms/details/by_date_range/all/' + $scope.send_month_start + '/' + $scope.send_month_end).then(
       function(response){
         return response.data;
@@ -234,7 +231,7 @@ $scope.xhrCall($scope, $http);
         });
         //end map
       }).then(function(response){
-        console.log(JSON.stringify(response));
+        //console.log(JSON.stringify(response));
         //not pure functions, but wth
         //$scope.updateCalendar();
         //probable test: assert response is array
@@ -242,11 +239,11 @@ $scope.xhrCall($scope, $http);
         response.forEach(function(elem){
           var idx = elem.room_type_id;
           delete elem.room_type_id;
-          console.log(JSON.stringify(elem));
-          console.log($scope.roomAndPrice[idx]);
+          //console.log(JSON.stringify(elem));
+          //console.log($scope.roomAndPrice[idx]);
           $scope.roomAndPrice[idx].forEach(function(elem_inner){
             if(elem_inner.id == elem.id){
-              console.log('here');
+              //console.log('here');
               elem_inner.room = elem.room;
               elem_inner.price = elem.price;
             }
@@ -257,8 +254,44 @@ $scope.xhrCall($scope, $http);
   }
 
 
-  $scope.updateCell = function(id, room, price){
+  $scope.updateCellRoom = function(id, room){
     //Get updated room and price of id. Send to backend
-    console.log(id, room, price);
+    var id_split = id.split('-');
+    var room_type_id = id_split[1];
+    var currentDay = (parseInt(id_split[2]) < 10 ? "0" : "") + id_split[2];
+    var currentMonthNumericDouble = (parseInt($scope.currentMonthNum) < 10 ?  "0" : "") + ($scope.currentMonthNum + 1);
+    console.log(room_type_id, currentDay, $scope.currentYear, currentMonthNumericDouble, room);
+    //xhr request here
+    //no need to change anything on frontend side, changes persist
+    //check on error, though, if error try to reload
+    $http.post(
+      '/rooms/price',
+      {
+        date: $scope.currentYear + "-" + currentMonthNumericDouble + "-" + currentDay,        
+        room_type_id: room_type_id,
+        inventory: room
+      }
+    );
   }
+
+  $scope.updateCellPrice = function(id, price){
+    //Get updated room and price of id. Send to backend
+    var id_split = id.split('-');
+    var room_type_id = id_split[1];
+    var currentDay = (parseInt(id_split[2]) < 10 ? "0" : "") + id_split[2];
+    var currentMonthNumericDouble = (parseInt($scope.currentMonthNum) < 10 ?  "0" : "") + ($scope.currentMonthNum + 1);
+    console.log(room_type_id, currentDay, $scope.currentYear, currentMonthNumericDouble, price);
+    //xhr request here
+    //no need to change anything on frontend side, changes persist
+    //check on error, though, if error try to reload
+    $http.post(
+      '/rooms/price',
+      {
+        date: $scope.currentYear + "-" + currentMonthNumericDouble + "-" + currentDay,
+        room_type_id: room_type_id,
+        price: price
+      }
+    );
+  }
+
 })

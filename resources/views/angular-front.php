@@ -115,7 +115,7 @@
                   <div  ng-click="roomValues.editRoom=!roomValues.editRoom">{{roomValues.room}}</div> 
                   <div class="edit" ng-show="roomValues.editRoom">
                     <form name="editRoomForm">
-                      <input type="text" name="room" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].room" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCell(roomValues.id, roomAndPrice[roomSizeName.id][$index].room, roomAndPrice[roomSizeName.id][$index].price)"> 
+                      <input type="text" name="room" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].room" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCellRoom(roomValues.id, roomAndPrice[roomSizeName.id][$index].room)"> 
                       <button class="btn btn-primary" type="submit" ng-click="roomValues.editRoom=!roomValues.editRoom"><i class="fa fa-check" aria-hidden="true"></i></button>
                       <button class="btn btn-default" ng-click="editRoomForm.room.$rollbackViewValue();roomValues.editRoom=!roomValues.editRoom"><i class="fa fa-times" aria-hidden="true"></i></button>
                     </form>
@@ -127,7 +127,7 @@
                   <div ng-click="roomValues.editPrice=!roomValues.editPrice">{{roomValues.price}}</div> 
                   <div class="edit" ng-show="roomValues.editPrice">
                     <form name="editPriceForm">
-                      <input type="text" name="price" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].price" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCell(roomValues.id, roomAndPrice[roomSizeName.id][$index].room, roomAndPrice[roomSizeName.id][$index].price)"> 
+                      <input type="text" name="price" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].price" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCellPrice(roomValues.id, roomAndPrice[roomSizeName.id][$index].price)"> 
                       <button class="btn btn-primary" ng-click="roomValues.editPrice=!roomValues.editPrice;" type="submit"><i class="fa fa-check" aria-hidden="true"></i>
                       </button>
                       <button class="btn btn-default" ng-click="editPriceForm.price.$rollbackViewValue();roomValues.editPrice=!roomValues.editPrice"><i class="fa fa-times" aria-hidden="true"></i></button>

@@ -42,4 +42,7 @@ To summerize, the plan is to:
 
 
 #Build
-  - See .travis.yml for all build scripts
+  - See .travis.yml for all build script
+
+#Broken Things
+  - Angular (or more correct, JS, or more correct Web Standards) Date Validation is kind of broken (angularjs issue  #6881)

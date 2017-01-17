@@ -24,4 +24,9 @@ class PostAPIsTest extends TestCase
     {
     	$this->assertTrue(true);
     }
+
+    public function testBulk()
+    {
+        $this->assertTrue(true);
+    }
 }

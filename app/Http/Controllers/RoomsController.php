@@ -7,6 +7,16 @@ use App\Models\Rooms;
 use App\Models\RoomPrices;
 use App\Models\RoomInventories;
 
+
+//use Requests here
+//json_decode
+//validate
+//send response
+//
+use App\Http\Requests\Requests\BulkUpdateRequest;
+use App\Http\Requests\Requests\SavePriceRequest;
+use App\Http\Requests\Requests\SaveInventoryRequest;
+
 class RoomsController extends Controller
 {
 
@@ -51,11 +61,15 @@ class RoomsController extends Controller
 
     //POST Requests
     
-    public function post_price(){
-
+    public function post_price(SavePriceRequest $request){
+        echo json_encode($request->all());
     }
 
-    public function post_inventory(){
-    	
+    public function post_inventory(SaveInventoryRequest $request){
+        echo json_encode($request->all());	
+    }
+
+    public function post_bulk(BulkUpdateRequest $request){
+        echo json_encode($request->all());
     }
 }
