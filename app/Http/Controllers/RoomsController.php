@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Rooms;
-use App\Models\RoomPrices;
-use App\Models\RoomInventories;
 
+//For Interface Injection
+use App\Repositories\Interfaces\RoomInventoriesRepositoryInterface;
+use App\Repositories\Interfaces\RoomPricesRepositoryInterface;
+use App\Repositories\Interfaces\RoomsRepositoryInterface;
 
 //use Requests here
 //json_decode
@@ -20,14 +21,12 @@ use App\Http\Requests\Requests\SaveInventoryRequest;
 class RoomsController extends Controller
 {
 
-    // Basic Dependency Injection
-    // since this is a simple project, we do not use 
-    // providers and bindings
+    // For Basic Dependency Injection
     protected $rooms;
     protected $room_prices;
     protected $room_inventories; 
     
-    public function __construct(Rooms $r, RoomPrices $rp, RoomInventories $ri)
+    public function __construct(RoomsRepositoryInterface $r, RoomPricesRepositoryInterface $rp, RoomInventoriesRepositoryInterface $ri)
     {
         $this->middleware('auth');
 
@@ -39,7 +38,7 @@ class RoomsController extends Controller
     //GET Requests 
     
     public function get_all_rooms(){
-        return response()->json($this->rooms->all());
+        return response()->json($this->rooms->get_all_rooms());
     }
 
     public function get_details($room_types, $dates){
@@ -68,7 +67,7 @@ class RoomsController extends Controller
             if($key === 'price') return false;
             return true;
         }, ARRAY_FILTER_USE_KEY);
-        $ret = RoomPrices::updateOrCreate($condition, ['price' => $params['price']]);
+        $ret = App\Models\RoomPrices::updateOrCreate($condition, ['price' => $params['price']]);
         //If no exception is thrown, I think we can be sure that it passed
         return response()->json(['success' => 'true']);
     }
@@ -79,7 +78,7 @@ class RoomsController extends Controller
             if($key === 'num_available') return false;
             return true;
         }, ARRAY_FILTER_USE_KEY);
-        $ret = RoomInventories::updateOrCreate($condition, ['num_available' => $params['num_available']]);
+        $ret = App\Models\RoomPrices::updateOrCreate($condition, ['num_available' => $params['num_available']]);
         //If no exception is thrown, I think we can be sure that it passed
         return response()->json(['success' => 'true']);    }
 
@@ -101,8 +100,8 @@ class RoomsController extends Controller
         //dd($dates);
         foreach($dates as $date){
             //I am sure there is a better way to do this, but deadlines
-            RoomInventories::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['num_available' => $params['changeAvailabilityTo']]);
-            RoomPrices::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['price' => $params['changePriceTo']]);
+            App\Models\RoomInventories::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['num_available' => $params['changeAvailabilityTo']]);
+            App\Models\RoomPrices::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['price' => $params['changePriceTo']]);
         }
         return response()->json(["success" => 'true']);
 
