@@ -34,7 +34,7 @@ class GetAPIsTest extends TestCase
     	$this->get('/rooms/details/1/2017-01-12')
     	    ->seeJson([
     	     	'room_type_id' => 1,
-                'price' => '5000IDR',
+                'price' => 5000,
     	     	'effective_date' => '2017-01-12',
     	     ]);
 
@@ -48,7 +48,7 @@ class GetAPIsTest extends TestCase
     	$this->get('/rooms/details/2/2017-01-12')
     	     ->seeJson([
     	     	'room_type_id' => 2,
-                'price' => '8000IDR',
+                'price' => 8000,
     	     	'effective_date' => '2017-01-12'
     	     ]);
 
@@ -62,7 +62,7 @@ class GetAPIsTest extends TestCase
     	$this->get('/rooms/details/all/2017-01-12')
     	     ->seeJson([
     	     		'room_type_id' => 2,
-    	     		'price' => '5000IDR',
+    	     		'price' => 5000,
                     'effective_date' => '2017-01-12',
     	     ]);
 
@@ -93,14 +93,14 @@ class GetAPIsTest extends TestCase
         $this->get('/rooms/details/by_date_range/all/2010-10-10/2018-10-10')
             ->seeJson([
                     'room_type_id' => 1,
-                    'price' => '5000IDR',
+                    'price' => 5000,
                     'effective_date' => '2017-01-12'
                 ]);
 
         $this->get('/rooms/details/by_date_range/all/2010-10-10/2018-10-10')
             ->seeJson([
                     'room_type_id' => 2,
-                    'price' => '8000IDR',
+                    'price' => 8000,
                     'effective_date' => '2017-01-12'
                 ]);
     }
