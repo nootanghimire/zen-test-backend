@@ -23,7 +23,7 @@ html, body{
 }
 
 #daysSection {
-  height: 98px;
+  height: auto;
 }
 
 #daysSection .row:nth-child(odd), #daysSection .row:nth-child(even) {
@@ -125,4 +125,9 @@ table tr.roomPrice {
 }
 .room-content tr.roomSizeName td{
   border-bottom: 1px solid rgba(0,0,0,0);
+}
+
+
+.validation-error{
+  color:#e71616 !important;
 }

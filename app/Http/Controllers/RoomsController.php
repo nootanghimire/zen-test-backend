@@ -67,7 +67,7 @@ class RoomsController extends Controller
             if($key === 'price') return false;
             return true;
         }, ARRAY_FILTER_USE_KEY);
-        $ret = App\Models\RoomPrices::updateOrCreate($condition, ['price' => $params['price']]);
+        $ret = \App\Models\RoomPrices::updateOrCreate($condition, ['price' => $params['price']]);
         //If no exception is thrown, I think we can be sure that it passed
         return response()->json(['success' => 'true']);
     }
@@ -78,7 +78,7 @@ class RoomsController extends Controller
             if($key === 'num_available') return false;
             return true;
         }, ARRAY_FILTER_USE_KEY);
-        $ret = App\Models\RoomPrices::updateOrCreate($condition, ['num_available' => $params['num_available']]);
+        $ret = \App\Models\RoomPrices::updateOrCreate($condition, ['num_available' => $params['num_available']]);
         //If no exception is thrown, I think we can be sure that it passed
         return response()->json(['success' => 'true']);    }
 
@@ -100,14 +100,15 @@ class RoomsController extends Controller
         //dd($dates);
         foreach($dates as $date){
             //I am sure there is a better way to do this, but deadlines
-            App\Models\RoomInventories::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['num_available' => $params['changeAvailabilityTo']]);
-            App\Models\RoomPrices::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['price' => $params['changePriceTo']]);
+            \App\Models\RoomInventories::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['num_available' => $params['changeAvailabilityTo']]);
+            \App\Models\RoomPrices::updateOrCreate(['effective_date' => $date, 'room_type_id'=>$params['room_type_id']], ['price' => $params['changePriceTo']]);
         }
         return response()->json(["success" => 'true']);
 
     }
 
     private function getDateForSpecificDayBetweenDates ($startDate,$endDate,$day) {
+        if($startDate == $endDate) return [$startDate];
         $endDate = strtotime($endDate);
         for($i = strtotime($day, strtotime($startDate)); $i <= $endDate; $i = strtotime('+1 week', $i))
             $date_array[] = date('Y-m-d', $i);

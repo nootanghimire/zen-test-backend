@@ -1,5 +1,7 @@
 var App = angular.module("ZenRoomsApp", []);
 
+//Do validation stuffs
+
 App.filter('range', function() {
   return function(input, total) {
     var date = new Date();
@@ -47,10 +49,10 @@ App.controller("BulkOperationsController", function($scope, $http, Scopes) {
   $scope.bulkOperations = {
     dateFrom : new Date(),
     dateTo : new Date(),
-    allDays : false,
+    allDays : true,
     allWeekdays : false,
     allWeekends : false,
-    selectedDays : {Mondays:false, Tuesdays:false, Wednesdays: false, Thursdays: false, Fridays: false, Saturdays: false, Sundays: false},
+    selectedDays : {Mondays:true, Tuesdays:true, Wednesdays: true, Thursdays: true, Fridays: true, Saturdays: true, Sundays: true},
     changePriceTo : 0,
     changeAvailabilityTo : 0
   }
@@ -89,6 +91,10 @@ App.controller("BulkOperationsController", function($scope, $http, Scopes) {
   // Toggle day checkboxes
   $scope.toggleDaySelection = function(day) {
     $scope.bulkOperations.selectedDays[day] = !$scope.bulkOperations.selectedDays[day];
+    //reset main checkboxes
+    $scope.bulkOperations.allDays = false;
+    $scope.bulkOperations.allWeekdays = false;
+    $scope.bulkOperations.allWeekends = false;
   }
 
   $scope.checkDaySelection = function(day){
@@ -104,10 +110,10 @@ App.controller("BulkOperationsController", function($scope, $http, Scopes) {
     $scope.bulkOperations = {
       dateFrom : '',
       dateTo : '',
-      allDays : false,
+      allDays : true,
       allWeekdays : false,
       allWeekends : false,
-      selectedDays : {Mondays:false, Tuesdays:false, Wednesdays: false, Thursdays: false, Fridays: false, Saturdays: false, Sundays: false},
+      selectedDays : {Mondays:true, Tuesdays:true, Wednesdays: true, Thursdays: true, Fridays: true, Saturdays: true, Sundays: true},
       changePriceTo : 0,
       changeAvailabilityTo : 0
     }
@@ -194,7 +200,7 @@ App.controller("CalendarViewController", function($scope, $http, Scopes) {
           editRoom: false, // Necessary
           editPrice: false, // Necessary
           room: 0,
-          price: "N/A "
+          price: 0
         })
       }
     }
@@ -263,8 +269,8 @@ App.controller("CalendarViewController", function($scope, $http, Scopes) {
             id: 'id-' + elem.room_type_id + '-' + dt,
             editRoom: false,
             editPrice: false,
-            room: elem.num_available || 0,
-            price: elem.price
+            room: parseInt(elem.num_available) || 0,
+            price: parseInt(elem.price) || 0
           };
         });
         //end map
@@ -282,8 +288,8 @@ App.controller("CalendarViewController", function($scope, $http, Scopes) {
           $scope.roomAndPrice[idx].forEach(function(elem_inner){
             if(elem_inner.id == elem.id){
               //console.log('here');
-              elem_inner.room = elem.room;
-              elem_inner.price = elem.price;
+              elem_inner.room = parseInt(elem.room);
+              elem_inner.price = parseInt(elem.price);
             }
           }); //inner foreach
         }); //outer foreach

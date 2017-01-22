@@ -16,6 +16,7 @@
 <body>
   <div id="main">
     <div id="bulkOperations" ng-controller="BulkOperationsController">
+      <form action="" name="bulkOperationsForm" class="form-horizontal form-inline">
       <div class="container-fluid">
         <div class="row">
           <div class="col-md-12">Bulk Operations</div>
@@ -31,14 +32,19 @@
           </form>
         </div>
         <div id="daysSection" class="row">
-          <form action="" class="form-horizontal form-inline">
             <div class="col-md-1"><strong>Select Days:</strong></div>
             <div class="col-md-3">
               <div class="row">
-                <div class="col-md-2">From:</div> <input type="date" class="form-control" ng-model="bulkOperations.dateFrom"/>
+                <div class="col-md-2">From:</div> <input name="dateFrom" type="date" class="form-control" ng-model="bulkOperations.dateFrom"/>
               </div>
               <div class="row">
-                <div class="col-md-2">To:</div> <input type="date" class="form-control" ng-model="bulkOperations.dateTo"/>
+                <div class="col-md-12 validation-error" ng-show="bulkOperationsForm.dateFrom.$touched && bulkOperationsForm.dateFrom.$invalid">Please enter a valid date.</div>
+              </div>
+              <div class="row">
+                <div class="col-md-2">To:</div> <input type="date" name="dateTo" class="form-control" ng-model="bulkOperations.dateTo"/>
+              </div>
+              <div class="row">
+                <div class="col-md-12 validation-error" ng-show="bulkOperationsForm.dateTo.$touched && bulkOperationsForm.dateTo.$invalid">Please enter a valid date.</div>
               </div>
             </div>
             <div class="col-md-1">Refine Days:</div>
@@ -68,19 +74,21 @@
                 <label><input type="checkbox" ng-checked="bulkOperations.selectedDays[day]" ng-click="toggleDaySelection(day)"> {{day}}</label>
               </div>
             </div>
-          </form>
         </div>
         <div class="row">
           <div class="col-md-2"><strong>Change Price To: </strong></div>
-          <div class="col-md-10 form-inline"><input type="text" class="form-control" ng-model="bulkOperations.changePriceTo"></div><br><br>
+          <div class="col-md-4 form-inline"><input type="number" name="changePriceTo" class="form-control" ng-model="bulkOperations.changePriceTo"></div>
+          <div class="col-md-6 form-inline validation-error" ng-show="bulkOperationsForm.changePriceTo.$touched && bulkOperationsForm.changePriceTo.$invalid">Please Enter a Valid Number</div><br><br>
           <div class="col-md-2"><strong>Change Availability To: </strong></div>
-          <div class="col-md-10 form-inline"><input type="text" class="form-control" ng-model="bulkOperations.changeAvailabilityTo"></div>
+          <div class="col-md-4 form-inline"><input type="number" class="form-control" name="changeAvailabilityTo" ng-model="bulkOperations.changeAvailabilityTo"></div>
+          <div class="col-md-6 form-inline validation-error" ng-show="bulkOperationsForm.changeAvailabilityTo.$touched && bulkOperationsForm.changeAvailabilityTo.$invalid">Please Enter a Valid Number</div>
         </div>
         <div class="row">
           <button type="button" class="btn btn-default" ng-click="cancelEventHandler()">Cancel</button>
-          <button type="button" class="btn btn-success" ng-click="submitEventHandler()">Update</button>
+          <button type="button" class="btn btn-success" ng-click="submitEventHandler()" ng-disabled="bulkOperationsForm.$dirty && bulkOperationsForm.$invalid">Update</button>
         </div>
       </div>
+      </form>
     </div>
     <div id="calendarView" ng-controller="CalendarViewController">
       <div class="container-fluid">
@@ -115,8 +123,8 @@
                   <div  ng-click="roomValues.editRoom=!roomValues.editRoom">{{roomValues.room}}</div> 
                   <div class="edit" ng-show="roomValues.editRoom">
                     <form name="editRoomForm">
-                      <input type="text" name="room" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].room" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCellRoom(roomValues.id, roomAndPrice[roomSizeName.id][$index].room)"> 
-                      <button class="btn btn-primary" type="submit" ng-click="roomValues.editRoom=!roomValues.editRoom"><i class="fa fa-check" aria-hidden="true"></i></button>
+                      <input type="number" name="room" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].room" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCellRoom(roomValues.id, roomAndPrice[roomSizeName.id][$index].room)"> 
+                      <button class="btn btn-primary" ng-type="submit" ng-click="roomValues.editRoom=!roomValues.editRoom"><i class="fa fa-check" aria-hidden="true"></i></button>
                       <button class="btn btn-default" ng-click="editRoomForm.room.$rollbackViewValue();roomValues.editRoom=!roomValues.editRoom"><i class="fa fa-times" aria-hidden="true"></i></button>
                     </form>
                   </div>
@@ -124,11 +132,11 @@
               </tr>
               <tr class="roomPrice">
                 <td ng-repeat="roomValues in roomAndPrice[roomSizeName.id] track by $index">
-                  <div ng-click="roomValues.editPrice=!roomValues.editPrice">{{roomValues.price}}</div> 
+                  <div ng-click="roomValues.editPrice=!roomValues.editPrice">{{roomValues.price}} IDR</div> 
                   <div class="edit" ng-show="roomValues.editPrice">
                     <form name="editPriceForm">
-                      <input type="text" name="price" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].price" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCellPrice(roomValues.id, roomAndPrice[roomSizeName.id][$index].price)"> 
-                      <button class="btn btn-primary" ng-click="roomValues.editPrice=!roomValues.editPrice;" type="submit"><i class="fa fa-check" aria-hidden="true"></i>
+                      <input type="number" name="price" class="form-control form-inline" ng-model="roomAndPrice[roomSizeName.id][$index].price" ng-model-options="{ updateOn: 'submit' }" ng-change="updateCellPrice(roomValues.id, roomAndPrice[roomSizeName.id][$index].price)"> 
+                      <button class="btn btn-primary" ng-click="roomValues.editPrice=!roomValues.editPrice" ng-type="submit"><i class="fa fa-check" aria-hidden="true"></i>
                       </button>
                       <button class="btn btn-default" ng-click="editPriceForm.price.$rollbackViewValue();roomValues.editPrice=!roomValues.editPrice"><i class="fa fa-times" aria-hidden="true"></i></button>
                     </form>
