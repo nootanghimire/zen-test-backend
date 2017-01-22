@@ -16,7 +16,7 @@ class CreateRoomPricesTable extends Migration
         Schema::create('room_prices', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('room_type_id')->references('id')->on('rooms');
-            $table->string('price');
+            $table->integer('price');
             $table->date('effective_date');
             $table->timestamps();
         });
